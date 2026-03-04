@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Космический пульт — паронимы ЕДИН</title>
+
+  <style>
+    :root{
+      --bg1:#070a1b;
+      --bg2:#0a1333;
+      --stroke: rgba(255,255,255,.14);
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:#fff;
+      background: radial-gradient(1200px 700px at 20% 10%, #18285a 0%, var(--bg1) 45%, #050713 100%);
+      min-height:100vh;
+    }
+
+    .wrap{
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 22px 18px 28px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+    }
+
+    .title{
+      font-weight: 900;
+      letter-spacing: .4px;
+      font-size: 22px;
+      margin:0;
+    }
+
+    .stats{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight: 800;
+      opacity: .95;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+      font-size: 14px;
+      user-select:none;
+      white-space: nowrap;
+    }
+
+    .pill .dot{
+      width:8px;height:8px;border-radius:50%;
+      background: #ffcc66;
+      box-shadow: 0 0 10px rgba(255,204,102,.8);
+    }
+
+    .pill .star{
+      width:10px;height:10px;border-radius:2px;
+      background:#9bd3ff;
+      box-shadow: 0 0 10px rgba(155,211,255,.8);
+      transform: rotate(45deg);
+    }
+
+    .soundToggle{
+      cursor:pointer;
+      gap:10px;
+    }
+
+    /* Иллюминатор */
+    .porthole{
+      margin-top: 16px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .portholeInner{
+      position: relative;
+      height: 360px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.10);
+      transition: box-shadow .15s ease, border-color .15s ease;
+    }
+
+    /* видео как фон */
+    #spaceVideo{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit: cover;
+
+      /* СДВИГ ДЛЯ УБОРКИ ЛОГОТИПА SORA */
+      object-position: 80% 65%;
+
+      opacity: 1;
+      filter: brightness(1.10) saturate(1.10) contrast(1.05);
+      transform: scale(1.04);
+    }
+
+    /* затемнение для читаемости текста */
+    .shade{
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(900px 280px at 50% 50%, rgba(0,0,0,.10) 0%, rgba(0,0,0,.28) 55%, rgba(0,0,0,.45) 100%),
+        linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.32));
+      pointer-events:none;
+    }
+
+    .questionBox{
+      position:absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(900px, 92%);
+      padding: 22px 22px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.32);
+      border: 1px solid rgba(255,255,255,.16);
+      box-shadow: 0 18px 60px rgba(0,0,0,.45), 0 0 24px rgba(130,200,255,.08);
+      text-align:center;
+      backdrop-filter: blur(6px);
+    }
+
+    .questionText{
+      font-weight: 900;
+      font-size: clamp(22px, 3vw, 44px);
+      letter-spacing: .4px;
+      text-shadow: 0 10px 30px rgba(0,0,0,.55);
+      margin: 0;
+      line-height: 1.25;
+    }
+
+    /* панель кнопок */
+    .panel{
+      margin-top: 14px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .wordRow{
+      display:flex;
+      gap: 12px;
+      justify-content:center;
+      flex-wrap: wrap;
+      padding: 6px 6px 12px;
+    }
+
+    .wordBtn{
+      border: 0;
+      cursor:pointer;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-weight: 1000;
+      letter-spacing: .35px;
+      font-size: 15px;
+      color: #07101a;
+      box-shadow: 0 14px 26px rgba(0,0,0,.35);
+      user-select:none;
+      transition: transform .08s ease, filter .08s ease;
+      min-width: 160px;
+      text-align: center;
+    }
+    .wordBtn:hover{
+      transform: translateY(-1px);
+      filter: brightness(1.06);
+      box-shadow: 0 16px 30px rgba(0,0,0,.38), 0 0 18px rgba(255,255,255,.10);
+    }
+
+    .wordBtn:active{ transform: translateY(1px) scale(.99); filter: brightness(.98); }
+
+    .c1{ background:#2ae7b6; }
+    .c2{ background:#ffbe55; }
+    .c3{ background:#6eb4ff; }
+    .c4{ background:#b58cff; }
+    .c5{ background:#ff73b0; }
+
+    .miniDef{
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      color: rgba(255,255,255,.92);
+      text-shadow: 0 6px 18px rgba(0,0,0,.55);
+      text-align:center;
+      line-height: 1.2;
+      user-select:none;
+    }
+
+    .controls{
+      display:flex;
+      justify-content:center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .ctrlBtn{
+      cursor:pointer;
+      padding: 11px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.26);
+      color:#fff;
+      font-weight: 900;
+      box-shadow: 0 12px 22px rgba(0,0,0,.28);
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease;
+    }
+    .ctrlBtn:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+      transform:none !important;
+      filter:none !important;
+      box-shadow: 0 12px 22px rgba(0,0,0,.28);
+    }
+
+    /* ✅ Hover-реакция для "космичности" */
+    .ctrlBtn:hover:not(:disabled){
+      transform: translateY(-1px);
+      border-color: rgba(140,210,255,.40);
+      box-shadow:
+        0 14px 26px rgba(0,0,0,.32),
+        0 0 22px rgba(120,200,255,.22);
+      filter: brightness(1.06);
+    }
+    .ctrlBtn:active:not(:disabled){
+      transform: translateY(0px);
+      filter: brightness(1.02);
+    }
+    .ctrlBtn:focus-visible{
+      outline: none;
+      border-color: rgba(140,210,255,.55);
+      box-shadow:
+        0 14px 26px rgba(0,0,0,.32),
+        0 0 28px rgba(120,200,255,.30);
+    }
+
+    /* Ошибки (прокрутка) */
+    .errorsWrap{
+      position:absolute;
+      inset: 16px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.34);
+      border: 1px solid rgba(255,255,255,.16);
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      backdrop-filter: blur(6px);
+      overflow:hidden;
+    }
+    .errorsHead{
+      padding: 14px 16px;
+      font-weight: 1000;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+    .errorsList{
+      height: calc(100% - 52px);
+      overflow:auto;
+      padding: 14px 16px;
+    }
+    .errCard{
+      padding: 12px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+    .bad{ color:#ff6363; font-weight: 1000; }
+    .good{ color:#6dff8b; font-weight: 1000; }
+
+    /* Оверлей инфографики */
+    .overlay{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      background: rgba(0,0,0,.66);
+      backdrop-filter: blur(6px);
+      z-index: 999;
+    }
+    .overlay.hide{ display:none; }
+
+    .overlay img{
+      max-width: min(1200px, 96vw);
+      max-height: 92vh;
+      width:auto;height:auto;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 22px 70px rgba(0,0,0,.55), 0 0 24px rgba(160,220,255,.15);
+    }
+    .overlayPanel{
+      position: fixed;
+      left: 18px;
+      bottom: 18px;
+      display:flex;
+      gap:10px;
+      z-index: 1000;
+    }
+    .overlayBtn{
+      border:1px solid rgba(255,255,255,.18);
+      background:#fff;
+      color:#0b0b12;
+      font-weight:1000;
+      border-radius:14px;
+      padding:10px 12px;
+      cursor:pointer;
+      box-shadow: 0 12px 26px rgba(0,0,0,.35), 0 0 18px rgba(110,192,255,.10);
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+    }
+    .overlayBtn:hover{
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+      box-shadow: 0 14px 28px rgba(0,0,0,.38), 0 0 22px rgba(120,200,255,.20);
+    }
+    .overlayBtn:active{ transform: translateY(0px); }
+    .overlayBtn.ghost{
+      background: rgba(0,0,0,.22);
+      color:#fff;
+      font-weight:900;
+    }
+
+    @media (max-width: 700px){
+      .portholeInner{ height: 320px; }
+      .title{ font-size: 18px; }
+      .wordBtn{ min-width: 140px; }
+    }
+
+    /* ----- ВСПЫШКИ: ТРЕВОГА и ВЕРНО ----- */
+
+    .alarmPill{
+      background: rgba(255,0,60,.16);
+      border: 1px solid rgba(255,80,120,.35);
+    }
+    .alarmDot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:#ff2b4a;
+      box-shadow: 0 0 14px rgba(255,43,74,.95), 0 0 28px rgba(255,43,74,.55);
+    }
+    .portholeInner.alarmFlash{
+      box-shadow:
+        0 0 0 2px rgba(255,60,90,.35) inset,
+        0 0 28px rgba(255,40,80,.35),
+        0 18px 60px rgba(0,0,0,.45);
+      border-color: rgba(255,80,120,.35);
+    }
+
+    .okPill{
+      background: rgba(60,255,140,.14);
+      border: 1px solid rgba(120,255,180,.30);
+    }
+    .okDot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:#29ff7a;
+      box-shadow: 0 0 14px rgba(41,255,122,.9), 0 0 28px rgba(41,255,122,.45);
+    }
+    .portholeInner.okFlash{
+      box-shadow:
+        0 0 0 2px rgba(60,255,140,.22) inset,
+        0 0 26px rgba(40,255,120,.22),
+        0 18px 60px rgba(0,0,0,.45);
+      border-color: rgba(120,255,180,.25);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1 class="title">Космический пульт: паронимы ЕДИН</h1>
+
+      <div class="stats">
+        <div class="pill"><span class="dot"></span>Вопрос <span id="qNum">0</span>/<span id="qTotal">15</span></div>
+        <div class="pill"><span class="star"></span>Баллы <span id="score">0</span></div>
+
+        <!-- лампы вспышек -->
+        <div class="pill okPill" id="okPill" title="Верно" style="display:none;">
+          <span class="okDot"></span> ВЕРНО
+        </div>
+        <div class="pill alarmPill" id="alarmPill" title="Тревога" style="display:none;">
+          <span class="alarmDot"></span> ТРЕВОГА
+        </div>
+
+        <div class="pill soundToggle" id="soundToggle" title="Включить/выключить звуки">
+          🔊 <span id="soundLabel">звук</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Иллюминатор -->
+    <div class="porthole">
+      <div class="portholeInner" id="portholeInner">
+
+        <video id="spaceVideo" playsinline muted loop preload="auto">
+          <source src="space.mp4" type="video/mp4">
+        </video>
+
+        <div class="shade"></div>
+
+        <!-- Вопрос -->
+        <div class="questionBox" id="questionBox">
+          <p class="questionText" id="questionText">Нажми СТАРТ</p>
+        </div>
+
+        <!-- Ошибки -->
+        <div class="errorsWrap" id="errorsWrap" style="display:none;">
+          <div class="errorsHead">Ошибки и правильные ответы (с пояснениями)</div>
+          <div class="errorsList" id="errorsList"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Панель -->
+    <div class="panel">
+      <div class="wordRow">
+        <button class="wordBtn c1" data-word="единый">ЕДИНЫЙ<div class="miniDef">о б щ и й</div></button>
+        <button class="wordBtn c2" data-word="единичный">ЕДИНИЧНЫЙ<div class="miniDef">с т а т и с т и к а</div></button>
+        <button class="wordBtn c3" data-word="единственный">ЕДИНСТВЕННЫЙ<div class="miniDef">э м о ц и я</div></button>
+        <button class="wordBtn c4" data-word="одиночный">ОДИНОЧНЫЙ<div class="miniDef">т е р м и н</div></button>
+        <button class="wordBtn c5" data-word="одинокий">ОДИНОКИЙ<div class="miniDef">ч у в с т в о</div></button>
+      </div>
+
+      <div class="controls">
+        <button class="ctrlBtn" id="btnStart">Старт</button>
+        <button class="ctrlBtn" id="btnReset">Сброс</button>
+        <button class="ctrlBtn" id="btnErrors" disabled>Посмотреть ошибки</button>
+        <button class="ctrlBtn" id="btnInfo">Инфографика</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Оверлей инфографики -->
+  <div class="overlay" id="overlay">
+    <img src="ediny.jpg" alt="Инфографика паронимы ЕДИН">
+    <div class="overlayPanel">
+      <button class="overlayBtn" id="overlayStart">СТАРТ ▶</button>
+      <button class="overlayBtn ghost" id="overlayClose">✕</button>
+    </div>
+  </div>
+
+  <script>
+    // ---------------------------
+    // ДАННЫЕ (добавлять новые примеры можно тут)
+    // ---------------------------
+    const questions = [
+      { t:"Это был ___ шанс всё исправить.", a:"единственный", why:"«единственный» = другого не было." },
+      { t:"В отчёте отмечены ___ случаи ошибки.", a:"единичный", why:"«единичный» = редкий, отдельный случай (в статистике/отчёте)." },
+      { t:"Ученики работали по ___ плану подготовки.", a:"единый", why:"«единый» = общий для всех, один для команды." },
+      { t:"В этом лесу встречаются лишь ___ экземпляры редкого северного папоротника.", a:"единичный", why:"«единичный» = редкий, отдельный пример/факт (статист)." },
+      { t:"Они сумели найти ___ выход из лабиринта.", a:"единственный", why:"«единственный» = другого не было." },
+      { t:"Зафиксированы ___ случаи нарушения дисциплины.", a:"единичный", why:"«единичный» = редкий случай в статистике." },
+      { t:"Так он лишился своего ___ друга.", a:"единственный", why:"«единственный» = другого не было." },
+      { t:"На небе не было ни ___ облачка.", a:"единый", why:"«ни единого» = совсем ни одного (с отрицанием)." },
+      { t:"Сова ведёт ___ образ жизни.", a:"одиночный", why:"«одиночный» = без пары/без других (нейтрально, без эмоций)." },
+      { t:"Это ___ пример в истории науки.", a:"единичный", why:"«единичный» = редкий случай в статистике." },
+      { t:"Мы придерживаемся ___ стандарта.", a:"единый", why:"«единый» = общий стандарт для всех." },
+      { t:"Послышались ___ выстрелы, возвестившие о начале охоты.", a:"одиночный", why:"«одиночный» = когда стреляют по одному (технич. термин)." },
+      { t:"За эти годы у писателя выработался ___ стиль.", a:"единый", why:"«единый» = общий, целостный." },
+      { t:"Она даже в кругу семьи чувствовала себя ___ .", a:"одинокий", why:"«одинокий» = есть эмоция/переживание одиночества." },
+      { t:"У них оставался ___ источник дохода.", a:"единственный", why:"«единственный» = один только, других нет." },
+    ];
+
+    // ---------------------------
+    // ✅ РАНДОМИЗАЦИЯ: список вопросов для текущей игры
+    // ---------------------------
+    let gameQuestions = [];   // сюда кладём перемешанную копию questions
+
+    function shuffleArray(arr){
+      // Fisher–Yates
+      for(let i = arr.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // ---------------------------
+    // СОСТОЯНИЕ
+    // ---------------------------
+    let idx = -1;
+    let score = 0;
+    let errors = [];
+    let soundOn = true;
+
+    // ---------------------------
+    // DOM
+    // ---------------------------
+    const qNum = document.getElementById("qNum");
+    const qTotal = document.getElementById("qTotal");
+    const scoreEl = document.getElementById("score");
+    const questionText = document.getElementById("questionText");
+    const questionBox = document.getElementById("questionBox");
+    const errorsWrap = document.getElementById("errorsWrap");
+    const errorsList = document.getElementById("errorsList");
+
+    const btnStart = document.getElementById("btnStart");
+    const btnReset = document.getElementById("btnReset");
+    const btnErrors = document.getElementById("btnErrors");
+    const btnInfo = document.getElementById("btnInfo");
+
+    const overlay = document.getElementById("overlay");
+    const overlayStart = document.getElementById("overlayStart");
+    const overlayClose = document.getElementById("overlayClose");
+
+    const spaceVideo = document.getElementById("spaceVideo");
+
+    const soundToggle = document.getElementById("soundToggle");
+    const soundLabel = document.getElementById("soundLabel");
+
+    const alarmPill = document.getElementById("alarmPill");
+    const okPill = document.getElementById("okPill");
+    const portholeInner = document.getElementById("portholeInner");
+
+    // ---------------------------
+    // ЗВУКИ (WebAudio: "ВЕРНО" и "ТРЕВОГА")
+    // ---------------------------
+    let audioCtx = null;
+
+    function ensureAudio(){
+      if(!audioCtx){
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if(audioCtx.state === "suspended"){
+        audioCtx.resume();
+      }
+    }
+
+    function beep({freq=880, dur=0.12, type="sine", gain=0.08}={}){
+      if(!soundOn) return;
+      ensureAudio();
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type;
+      o.frequency.value = freq;
+      g.gain.value = gain;
+      o.connect(g);
+      g.connect(audioCtx.destination);
+      o.start();
+      o.stop(audioCtx.currentTime + dur);
+    }
+
+    function playCorrect(){
+      beep({freq:880, dur:0.10, type:"triangle", gain:0.09});
+      setTimeout(()=>beep({freq:1320, dur:0.10, type:"triangle", gain:0.07}), 110);
+    }
+
+    function playAlarm(){
+      if(!soundOn) return;
+      ensureAudio();
+      const now = audioCtx.currentTime;
+
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+
+      o.type = "square";
+      o.frequency.setValueAtTime(520, now);
+      o.frequency.linearRampToValueAtTime(760, now + 0.16);
+      o.frequency.linearRampToValueAtTime(520, now + 0.32);
+
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.exponentialRampToValueAtTime(0.12, now + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.34);
+
+      o.connect(g);
+      g.connect(audioCtx.destination);
+      o.start(now);
+      o.stop(now + 0.36);
+
+      setTimeout(()=>{
+        const o2 = audioCtx.createOscillator();
+        const g2 = audioCtx.createGain();
+        const t = audioCtx.currentTime;
+
+        o2.type="square";
+        o2.frequency.setValueAtTime(460, t);
+        o2.frequency.linearRampToValueAtTime(680, t + 0.16);
+        o2.frequency.linearRampToValueAtTime(460, t + 0.32);
+
+        g2.gain.setValueAtTime(0.0001, t);
+        g2.gain.exponentialRampToValueAtTime(0.10, t + 0.02);
+        g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.34);
+
+        o2.connect(g2);
+        g2.connect(audioCtx.destination);
+        o2.start(t);
+        o2.stop(t + 0.36);
+      }, 260);
+    }
+
+    // ---------------------------
+    // ВСПЫШКИ UI
+    // ---------------------------
+    function alarmFlash(){
+      alarmPill.style.display = "inline-flex";
+      portholeInner.classList.add("alarmFlash");
+      setTimeout(()=> portholeInner.classList.remove("alarmFlash"), 380);
+      setTimeout(()=> alarmPill.style.display = "none", 900);
+    }
+
+    function okFlash(){
+      okPill.style.display = "inline-flex";
+      portholeInner.classList.add("okFlash");
+      setTimeout(()=> portholeInner.classList.remove("okFlash"), 260);
+      setTimeout(()=> okPill.style.display = "none", 650);
+    }
+
+    // ---------------------------
+    // UI helpers
+    // ---------------------------
+    function updateTop(){
+      const total = gameQuestions.length || questions.length;
+      qTotal.textContent = total;
+      qNum.textContent = idx < 0 ? 0 : Math.min(idx+1, total);
+      scoreEl.textContent = score;
+    }
+
+    function setQuestion(text){
+      errorsWrap.style.display = "none";
+      questionBox.style.display = "block";
+      questionText.textContent = text;
+    }
+
+    function renderQuestion(){
+      updateTop();
+      const q = gameQuestions[idx];
+      setQuestion(q.t);
+    }
+
+    function renderIntro(){
+      updateTop();
+      setQuestion("Нажми СТАРТ");
+      btnErrors.disabled = true;
+    }
+
+    // ---------------------------
+    // ИГРА
+    // ---------------------------
+    async function tryPlayVideo(){
+      try{
+        await spaceVideo.play();
+      }catch(e){
+        // может быть заблокировано до пользовательского жеста
+      }
+    }
+
+    function startGame(){
+      closeInfo();
+      errorsWrap.style.display = "none";
+
+      // ✅ каждый старт — новый перемешанный порядок
+      gameQuestions = shuffleArray([...questions]);
+
+      idx = 0;
+      score = 0;
+      errors = [];
+      btnErrors.disabled = true;
+
+      tryPlayVideo();
+      renderQuestion();
+    }
+
+    function resetGame(){
+      idx = -1;
+      score = 0;
+      errors = [];
+      btnErrors.disabled = true;
+      renderIntro();
+    }
+
+    function answer(word){
+      if(idx < 0 || idx >= gameQuestions.length) return;
+
+      const q = gameQuestions[idx];
+
+      if(word === q.a){
+        score += 1;
+        playCorrect();
+        okFlash();
+      }else{
+        errors.push({
+          q: q.t,
+          your: word,
+          right: q.a,
+          why: q.why
+        });
+        playAlarm();
+        alarmFlash();
+      }
+
+      idx += 1;
+
+      if(idx >= gameQuestions.length){
+        updateTop();
+        setQuestion("Готово! Нажми «Посмотреть ошибки»");
+        btnErrors.disabled = false;
+      }else{
+        renderQuestion();
+      }
+    }
+
+    function showErrors(){
+      if(errors.length === 0){
+        errorsWrap.style.display = "none";
+        setQuestion("Ошибок нет 👍");
+        return;
+      }
+
+      questionBox.style.display = "none";
+      errorsWrap.style.display = "block";
+      btnErrors.disabled = false;
+
+      errorsList.innerHTML = errors.map((e, i) => `
+        <div class="errCard">
+          <div style="font-weight:1000; margin-bottom:6px;">${i+1}) ${e.q}</div>
+          <div><span class="bad">Твой ответ:</span> <span class="bad">${e.your}</span></div>
+          <div><span class="good">Правильно:</span> <span class="good">${e.right}</span></div>
+          <div style="opacity:.92; margin-top:6px;">(потому что: ${e.why})</div>
+        </div>
+      `).join("");
+    }
+
+    // ---------------------------
+    // Инфографика
+    // ---------------------------
+    function showInfo(){ overlay.classList.remove("hide"); }
+    function closeInfo(){ overlay.classList.add("hide"); }
+
+    // ---------------------------
+    // События
+    // ---------------------------
+    document.querySelectorAll(".wordBtn").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        answer(btn.dataset.word);
+      });
+    });
+
+    btnStart.addEventListener("click", startGame);
+    btnReset.addEventListener("click", resetGame);
+    btnErrors.addEventListener("click", showErrors);
+    btnInfo.addEventListener("click", showInfo);
+
+    overlayStart.addEventListener("click", startGame);
+    overlayClose.addEventListener("click", closeInfo);
+
+    // клавиши 1–5
+    document.addEventListener("keydown", (e)=>{
+      const map = { "1":"единый", "2":"единичный", "3":"единственный", "4":"одиночный", "5":"одинокий" };
+      if(map[e.key]) answer(map[e.key]);
+    });
+
+    // звук toggle
+    soundToggle.addEventListener("click", ()=>{
+      soundOn = !soundOn;
+      soundLabel.textContent = soundOn ? "звук" : "без звука";
+      if(soundOn) ensureAudio();
+    });
+
+    // ---------------------------
+    // Стартовое состояние
+    // ---------------------------
+    gameQuestions = [...questions]; // чтобы total показывался сразу
+    renderIntro();
+    // Оверлей инфографики показывается сразу (он не hidden по умолчанию)
+  </script>
+</body>
+</html>

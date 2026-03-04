@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Космический след Платона</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="cosmicCanvas"></canvas>
+
+    <script>
+        // Получаем элемент canvas
+        const canvas = document.getElementById('cosmicCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Устанавливаем размеры canvas равными размерам окна браузера
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Массив для хранения звездочек
+        const stars = [];
+
+        // Цвета звездочек (можно менять на любые)
+        const colors = [
+            '#FFD700', // Золотой
+            '#FFA500', // Оранжевый
+            '#FF6347', // Красный
+            '#FF1493', // Розовый
+            '#8A2BE2', // Фиолетовый
+            '#00CED1', // Бирюзовый
+            '#32CD32'  // Зеленый
+        ];
+
+        // Функция для рисования одной звездочки
+        function drawStar(x, y, size, color) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            for (let i = 0; i < 5; i++) {
+                ctx.lineTo(0, -size);
+                ctx.rotate((Math.PI * 2) / 5);
+                ctx.lineTo(0, -size * 0.5);
+                ctx.rotate((Math.PI * 2) / 5);
+            }
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // Функция для обновления и рисования всех звездочек
+        function updateStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < stars.length; i++) {
+                const star = stars[i];
+                star.alpha -= 0.01; // Уменьшаем прозрачность, чтобы звезда исчезала
+                if (star.alpha <= 0) {
+                    stars.splice(i, 1); // Удаляем звезду, если она полностью прозрачная
+                    i--;
+                } else {
+                    drawStar(star.x, star.y, star.size, star.color);
+                }
+            }
+        }
+
+        // Обработчик движения мыши
+        canvas.addEventListener('mousemove', (event) => {
+            // Создаем новую звездочку на позиции курсора
+            const newStar = {
+                x: event.clientX,
+                y: event.clientY,
+                size: Math.random() * 5 + 3, // Размер от 3 до 8
+                color: colors[Math.floor(Math.random() * colors.length)], // Случайный цвет
+                alpha: 1.0 // Начальная прозрачность
+            };
+            stars.push(newStar);
+        });
+
+        // Главный цикл анимации
+        function animate() {
+            updateStars();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>

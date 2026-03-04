@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Космические паронимы</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+color:white;
+overflow:hidden;
+}
+
+video{
+position:fixed;
+right:0;
+bottom:0;
+min-width:100%;
+min-height:100%;
+object-fit:cover;
+z-index:-1;
+}
+
+.center{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+text-align:center;
+}
+
+button{
+font-size:24px;
+padding:20px 40px;
+border:none;
+border-radius:10px;
+background:#00aaff;
+color:white;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+background:#00ddff;
+transform:scale(1.05);
+}
+
+</style>
+</head>
+
+<body>
+
+<video autoplay muted loop>
+<source src="space.mp4" type="video/mp4">
+</video>
+
+<div class="center">
+
+<h1>Космические игры с паронимами</h1>
+
+<br>
+
+<button onclick="location.href='ediny/'">
+Открыть игру
+</button>
+
+</div>
+
+</body>
+</html>
