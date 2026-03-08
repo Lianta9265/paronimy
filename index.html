@@ -1,275 +1,315 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Космические паронимы</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    *{
-      box-sizing:border-box;
-    }
+<title>Космические паронимы</title>
 
-    body{
-      margin:0;
-      font-family: Arial, Helvetica, sans-serif;
-      color:white;
-      overflow:hidden;
-      background:#050713;
-    }
+<style>
 
-    /* видео фон */
-    #spaceVideo{
-      position:fixed;
-      inset:0;
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      z-index:-2;
-      filter:saturate(1.03) contrast(1.02);
-    }
+*{
+box-sizing:border-box;
+}
 
-    /* затемнение */
-    .shade{
-      position:fixed;
-      inset:0;
-      background:
-        radial-gradient(circle at 40% 20%, rgba(0,0,0,.18), rgba(0,0,0,.58)),
-        linear-gradient(rgba(0,0,0,.18), rgba(0,0,0,.68));
-      z-index:-1;
-    }
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+color:white;
+overflow:hidden;
+background:#050713;
+}
 
-    /* центр */
-    .center{
-      position:absolute;
-      top:50%;
-      left:50%;
-      transform:translate(-50%,-50%);
-      text-align:center;
-      width:min(920px, 92vw);
-    }
+/* видео фон */
 
-    /* стеклянная панель */
-    .panel{
-      background:rgba(255,255,255,.08);
-      backdrop-filter:blur(10px);
-      padding:38px 28px 34px;
-      border-radius:22px;
-      border:1px solid rgba(255,255,255,.15);
-      box-shadow:0 20px 60px rgba(0,0,0,.6);
-    }
+#spaceVideo{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:-2;
+filter:saturate(1.05) contrast(1.03);
+}
 
-    h1{
-      font-size:clamp(30px, 4vw, 52px);
-      margin:0 0 12px;
-      font-weight:900;
-      letter-spacing:.3px;
-      text-shadow:0 6px 22px rgba(0,0,0,.45);
-    }
+/* лёгкое затемнение */
 
-    .subtitle{
-      font-size:16px;
-      opacity:.92;
-      margin-bottom:28px;
-      font-weight:700;
-    }
+.shade{
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at 40% 20%, rgba(0,0,0,.08), rgba(0,0,0,.30)),
+linear-gradient(rgba(0,0,0,.08), rgba(0,0,0,.35));
+z-index:-1;
+}
 
-    /* блок кнопок */
-    .buttonGrid{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(220px, 1fr));
-      gap:18px;
-      justify-content:center;
-      align-items:stretch;
-      margin: 0 auto;
-      max-width: 760px;
-    }
+/* центр */
 
-    @media (max-width: 700px){
-      .buttonGrid{
-        grid-template-columns: 1fr;
-      }
-    }
+.center{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+text-align:center;
+width:min(980px, 94vw);
+}
 
-    .gameCard{
-      text-decoration:none;
-      color:white;
-      border-radius:20px;
-      padding:18px 16px;
-      border:1px solid rgba(255,255,255,.18);
-      box-shadow:0 16px 30px rgba(0,0,0,.35);
-      transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
-      position:relative;
-      overflow:hidden;
-    }
+/* стеклянная панель */
 
-    .gameCard:hover{
-      transform:translateY(-4px) scale(1.02);
-      box-shadow:0 22px 38px rgba(0,0,0,.45), 0 0 22px rgba(255,255,255,.10);
-      filter:brightness(1.05);
-    }
+.panel{
+background:rgba(255,255,255,.04);
+backdrop-filter:blur(6px);
+-webkit-backdrop-filter:blur(6px);
+padding:40px 30px;
+border-radius:22px;
+border:1px solid rgba(255,255,255,.10);
+box-shadow:0 20px 60px rgba(0,0,0,.35);
+}
 
-    .gameCard:active{
-      transform:translateY(-1px) scale(.995);
-    }
+h1{
+font-size:clamp(30px,4vw,56px);
+margin:0 0 10px;
+font-weight:900;
+text-shadow:0 6px 22px rgba(0,0,0,.45);
+}
 
-    .gameCard::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,0));
-      pointer-events:none;
-    }
+.subtitle{
+font-size:16px;
+margin-bottom:28px;
+opacity:.95;
+}
 
-    .cardTitle{
-      position:relative;
-      font-size:28px;
-      font-weight:900;
-      margin-bottom:8px;
-      letter-spacing:.4px;
-    }
+/* сетка кнопок */
 
-    .cardText{
-      position:relative;
-      font-size:14px;
-      line-height:1.35;
-      font-weight:700;
-      opacity:.95;
-    }
+.buttonGrid{
+display:grid;
+grid-template-columns:repeat(2,minmax(240px,1fr));
+gap:20px;
+max-width:820px;
+margin:0 auto;
+}
 
-    .blue{
-      background:linear-gradient(135deg, #2aa8ff, #1177ff);
-    }
+@media (max-width:700px){
+.buttonGrid{
+grid-template-columns:1fr;
+}
+}
 
-    .violet{
-      background:linear-gradient(135deg, #8d6bff, #d25bff);
-    }
+.gameCard{
+text-decoration:none;
+color:white;
+border-radius:22px;
+padding:22px;
+position:relative;
+overflow:hidden;
+transition:.2s;
+}
 
-    .soon{
-      background:linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
-      color:rgba(255,255,255,.88);
-    }
+.gameCard:hover{
+transform:translateY(-4px) scale(1.03);
+}
 
-    .bottomNote{
-      margin-top:22px;
-      font-size:13px;
-      opacity:.8;
-      font-weight:700;
-    }
+/* синий */
 
-    /* canvas звёзд */
-    #starCanvas{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      z-index:10;
-    }
-  </style>
+.blue{
+background:linear-gradient(135deg,#3db6ff,#156bff);
+border:1px solid rgba(180,230,255,.7);
+box-shadow:
+0 0 20px rgba(80,180,255,.45),
+0 0 40px rgba(80,180,255,.25);
+}
+
+.blue:hover{
+box-shadow:
+0 0 35px rgba(80,180,255,.8),
+0 0 70px rgba(80,180,255,.4);
+}
+
+/* фиолетовый */
+
+.violet{
+background:linear-gradient(135deg,#9b7bff,#e364ff);
+border:1px solid rgba(255,200,255,.7);
+box-shadow:
+0 0 20px rgba(210,110,255,.45),
+0 0 40px rgba(210,110,255,.25);
+}
+
+.violet:hover{
+box-shadow:
+0 0 35px rgba(210,110,255,.8),
+0 0 70px rgba(210,110,255,.4);
+}
+
+.cardTitle{
+font-size:30px;
+font-weight:900;
+margin-bottom:8px;
+}
+
+.cardText{
+font-size:15px;
+line-height:1.4;
+}
+
+/* canvas курсора */
+
+#starCanvas{
+position:fixed;
+inset:0;
+pointer-events:none;
+z-index:10;
+}
+
+</style>
 </head>
 
 <body>
 
-  <video autoplay muted loop playsinline id="spaceVideo">
-    <source src="space.mp4" type="video/mp4">
-  </video>
+<video autoplay muted loop playsinline id="spaceVideo">
+<source src="space.mp4" type="video/mp4">
+</video>
 
-  <div class="shade"></div>
+<div class="shade"></div>
 
-  <canvas id="starCanvas"></canvas>
+<canvas id="starCanvas"></canvas>
 
-  <div class="center">
-    <div class="panel">
-      <h1>Космические игры с паронимами</h1>
-      <div class="subtitle">Выбери сектор космического пульта 🚀</div>
+<div class="center">
 
-      <div class="buttonGrid">
-        <a class="gameCard blue" href="ediny/">
-          <div class="cardTitle">ЕДИНЫЙ</div>
-          <div class="cardText">
-            единый • единичный • единственный • одиночный • одинокий
-          </div>
-        </a>
+<div class="panel">
 
-        <a class="gameCard violet" href="tselyj/">
-          <div class="cardTitle">ЦЕЛЫЙ</div>
-          <div class="cardText">
-            целый • цельный • целостный
-          </div>
-        </a>
+<h1>Космические игры с паронимами</h1>
+<div class="subtitle">Выбери сектор космического пульта 🚀</div>
 
-        <div class="gameCard soon">
-          <div class="cardTitle">СКОРО</div>
-          <div class="cardText">
-            сюда добавим новые викторины по другим паронимам
-          </div>
-        </div>
+<div class="buttonGrid">
 
-        <div class="gameCard soon">
-          <div class="cardTitle">ЕЩЁ ИГРЫ</div>
-          <div class="cardText">
-            сайт будет постепенно расширяться как космическая станция
-          </div>
-        </div>
-      </div>
+<a class="gameCard blue" href="ediny/">
+<div class="cardTitle">ЕДИНЫЙ</div>
+<div class="cardText">
+единый • единичный • единственный • одиночный • одинокий
+</div>
+</a>
 
-      <div class="bottomNote">
-        Звёздный след работает только на главной странице. Внутри игр — обычный курсор.
-      </div>
-    </div>
-  </div>
+<a class="gameCard violet" href="tselyj/">
+<div class="cardTitle">ЦЕЛЫЙ</div>
+<div class="cardText">
+целый • цельный • целостный
+</div>
+</a>
 
-  <script>
-    /* звездный курсор */
-    const canvas = document.getElementById("starCanvas");
-    const ctx = canvas.getContext("2d");
+</div>
 
-    function resize(){
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
+</div>
 
-    resize();
-    window.addEventListener("resize", resize);
+</div>
 
-    let stars = [];
-    const colors = ["#ffffff", "#d8f3ff", "#ffd6f9", "#cce3ff", "#f9f9ff"];
+<script>
 
-    document.addEventListener("mousemove", e => {
-      stars.push({
-        x: e.clientX,
-        y: e.clientY,
-        size: Math.random() * 4 + 2,
-        alpha: 1,
-        color: colors[Math.floor(Math.random() * colors.length)]
-      });
-    });
+/* космический курсор */
 
-    function draw(){
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+const canvas=document.getElementById("starCanvas");
+const ctx=canvas.getContext("2d");
 
-      for(let i = 0; i < stars.length; i++){
-        let s = stars[i];
+function resize(){
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+}
 
-        ctx.beginPath();
-        ctx.globalAlpha = s.alpha;
-        ctx.fillStyle = s.color;
-        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-        ctx.fill();
+resize();
+window.addEventListener("resize",resize);
 
-        s.alpha -= 0.02;
+let stars=[];
 
-        if(s.alpha <= 0){
-          stars.splice(i, 1);
-          i--;
-        }
-      }
+const colors=[
+"#ff4f81",
+"#ffd500",
+"#00eaff",
+"#9d5cff",
+"#00ff9c",
+"#ff7a00"
+];
 
-      ctx.globalAlpha = 1;
-      requestAnimationFrame(draw);
-    }
+document.addEventListener("mousemove",e=>{
 
-    draw();
-  </script>
+stars.push({
+x:e.clientX,
+y:e.clientY,
+size:Math.random()*8+6,
+rotation:Math.random()*360,
+alpha:1,
+color:colors[Math.floor(Math.random()*colors.length)]
+});
+
+});
+
+function drawStar(x,y,size,rotation,color,alpha){
+
+ctx.save();
+
+ctx.translate(x,y);
+ctx.rotate(rotation*Math.PI/180);
+ctx.globalAlpha=alpha;
+
+ctx.shadowBlur=10;
+ctx.shadowColor=color;
+
+ctx.fillStyle=color;
+
+ctx.beginPath();
+
+for(let i=0;i<5;i++){
+ctx.lineTo(
+Math.cos((18+i*72)/180*Math.PI)*size,
+-Math.sin((18+i*72)/180*Math.PI)*size
+);
+ctx.lineTo(
+Math.cos((54+i*72)/180*Math.PI)*size/2,
+-Math.sin((54+i*72)/180*Math.PI)*size/2
+);
+}
+
+ctx.closePath();
+ctx.fill();
+
+ctx.restore();
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+for(let i=0;i<stars.length;i++){
+
+let s=stars[i];
+
+drawStar(
+s.x,
+s.y,
+s.size,
+s.rotation,
+s.color,
+s.alpha
+);
+
+s.alpha-=0.03;
+s.size*=0.96;
+s.rotation+=2;
+
+if(s.alpha<=0){
+stars.splice(i,1);
+i--;
+}
+
+}
+
+requestAnimationFrame(animate);
+
+}
+
+animate();
+
+</script>
 
 </body>
 </html>
