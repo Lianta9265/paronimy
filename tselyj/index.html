@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Космический пульт — паронимы ЕДИН</title>
+  <title>Космический пульт — паронимы ЦЕЛЫЙ</title>
 
   <style>
     :root{
@@ -20,6 +20,13 @@
       color:#fff;
       background: radial-gradient(1200px 700px at 20% 10%, #18285a 0%, var(--bg1) 45%, #050713 100%);
       min-height:100vh;
+    }
+
+    #starCanvas{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
     }
 
     .wrap{
@@ -401,9 +408,10 @@
 </head>
 
 <body>
+  <canvas id="starCanvas"></canvas>
   <div class="wrap">
     <div class="topbar">
-      <h1 class="title">Космический пульт: паронимы ЕДИН</h1>
+      <h1 class="title">Космический пульт: паронимы ЦЕЛЫЙ</h1>
 
       <div class="stats">
         <div class="pill"><span class="dot"></span>Вопрос <span id="qNum">0</span>/<span id="qTotal">15</span></div>
@@ -489,7 +497,7 @@
       { t:"Перед исследователем предстала ___ картина развития языка.", a:"целостный", why:"«целостный» — о концепция, теории, картине мира." },
       { t:"Столешница была изготовлена из ___  дуба.", a:"цельный", why:"«цельный» = из одного куска материала (монолит)." },
       { t:"Удивительно, но после падения ваза осталось совершенно ___.", a:"целый", why:"«целый» = неповреждённый." },
-      { t:"У трапа самолёта собрался ___ почетный караул..", a:"целый", why:"«целый» = количество." },
+      { t:"У памятника стоял ___ почетный караул..", a:"целый", why:"«целый» = количество." },
       { t:"Во всех статьях автор обращается к одним и тем же проблемам, в результате чего сборник больше напоминает ___ текст.", a:"целостный", why:"«целостный» — объединяющий части в одну структуру." },
       { t:"Шпаги были похожи одна на другую. Только одна из них была ___, а другая складная.", a:"цельный", why:"«цельный» = монолитный, не из отдельных частей." },
       { t:"___  характера — это прежде всего отсутствие внутренних противоречий.", a:"цельность", why:"«цельность» = внутренняя гармония, соответствие слов делам." },
@@ -781,7 +789,7 @@
 
     // клавиши 1–5
     document.addEventListener("keydown", (e)=>{
-      const map = { "1":"единый", "2":"единичный", "3":"единственный", "4":"одиночный", "5":"одинокий" };
+      const map = { "1":"целыйый", "2":"цельный", "3":"целостный", "4":"целостность", "5":"цельность" };
       if(map[e.key]) answer(map[e.key]);
     });
 
@@ -798,6 +806,89 @@
     gameQuestions = [...questions]; // чтобы total показывался сразу
     renderIntro();
     // Оверлей инфографики показывается сразу (он не hidden по умолчанию)
+  </script>
+
+  <script>
+    const canvas = document.getElementById("starCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeStarCanvas(){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    resizeStarCanvas();
+    window.addEventListener("resize", resizeStarCanvas);
+
+    let stars = [];
+
+    const colors = [
+      "#ff4f81",
+      "#ffd500",
+      "#00eaff",
+      "#9d5cff",
+      "#00ff9c",
+      "#ff7a00"
+    ];
+
+    document.addEventListener("mousemove", (e) => {
+      stars.push({
+        x: e.clientX,
+        y: e.clientY,
+        size: Math.random() * 8 + 6,
+        rotation: Math.random() * 360,
+        alpha: 1,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      });
+    });
+
+    function drawStar(x, y, size, rotation, color, alpha){
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation * Math.PI / 180);
+      ctx.globalAlpha = alpha;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = color;
+      ctx.fillStyle = color;
+
+      ctx.beginPath();
+      for(let i = 0; i < 5; i++){
+        ctx.lineTo(
+          Math.cos((18 + i * 72) / 180 * Math.PI) * size,
+          -Math.sin((18 + i * 72) / 180 * Math.PI) * size
+        );
+        ctx.lineTo(
+          Math.cos((54 + i * 72) / 180 * Math.PI) * size / 2,
+          -Math.sin((54 + i * 72) / 180 * Math.PI) * size / 2
+        );
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function animateStars(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for(let i = 0; i < stars.length; i++){
+        const s = stars[i];
+
+        drawStar(s.x, s.y, s.size, s.rotation, s.color, s.alpha);
+
+        s.alpha -= 0.03;
+        s.size *= 0.96;
+        s.rotation += 2;
+
+        if(s.alpha <= 0){
+          stars.splice(i, 1);
+          i--;
+        }
+      }
+
+      requestAnimationFrame(animateStars);
+    }
+
+    animateStars();
   </script>
 </body>
 </html>
